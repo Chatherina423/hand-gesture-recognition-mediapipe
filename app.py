@@ -20,8 +20,8 @@ def get_args():
     parser = argparse.ArgumentParser()
 
     parser.add_argument("--device", type=int, default=0)
-    parser.add_argument("--width", help='cap width', type=int, default=960)
-    parser.add_argument("--height", help='cap height', type=int, default=540)
+    parser.add_argument("--width", help='cap width', type=int, default=1280)
+    parser.add_argument("--height", help='cap height', type=int, default=720)
 
     parser.add_argument('--use_static_image_mode', action='store_true')
     parser.add_argument("--min_detection_confidence",
@@ -70,6 +70,8 @@ def main():
 
     point_history_classifier = PointHistoryClassifier()
 
+
+
     # Read labels ###########################################################
     with open('model/keypoint_classifier/keypoint_classifier_label.csv',
               encoding='utf-8-sig') as f:
@@ -77,6 +79,8 @@ def main():
         keypoint_classifier_labels = [
             row[0] for row in keypoint_classifier_labels
         ]
+
+
     with open(
             'model/point_history_classifier/point_history_classifier_label.csv',
             encoding='utf-8-sig') as f:
@@ -84,6 +88,8 @@ def main():
         point_history_classifier_labels = [
             row[0] for row in point_history_classifier_labels
         ]
+
+
 
     # FPS Measurement ########################################################
     cvFpsCalc = CvFpsCalc(buffer_len=10)
@@ -98,21 +104,30 @@ def main():
     #  ########################################################################
     mode = 0
 
+
+
     while True:
         fps = cvFpsCalc.get()
+
 
         # Process Key (ESC: end) #################################################
         key = cv.waitKey(10)
         if key == 27:  # ESC
             break
+
         number, mode = select_mode(key, mode)
+
+
 
         # Camera capture #####################################################
         ret, image = cap.read()
         if not ret:
-            break
+            print("Ignoring empty camera frame.")
+            continue
         image = cv.flip(image, 1)  # Mirror display
         debug_image = copy.deepcopy(image)
+
+
 
         # Detection implementation #############################################################
         image = cv.cvtColor(image, cv.COLOR_BGR2RGB)
@@ -120,6 +135,8 @@ def main():
         image.flags.writeable = False
         results = hands.process(image)
         image.flags.writeable = True
+
+
 
         #  ####################################################################
         if results.multi_hand_landmarks is not None:

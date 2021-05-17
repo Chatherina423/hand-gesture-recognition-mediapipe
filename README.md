@@ -1,3 +1,6 @@
+# Fixed Part
+We trained extra 3 gestures: "Swipe_left", "Swipe_right" which are point_history classifier and "choose" which is keypoint classifier.
+
 # hand-gesture-recognition-using-mediapipe
 Estimate hand pose using MediaPipe (Python version).<br> This is a sample 
 program that recognizes hand signs and finger gestures with a simple MLP using the detected key points.
